@@ -1,0 +1,22 @@
+model Ingredient {
+  id String @id @default(cuid())
+
+  name        String
+  defaultUnit Unit   @map("default_unit")
+
+  recipes RecipeIngredient[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("ingredients")
+}
+
+enum Unit {
+  GRAM // г
+  MILLILITER // мл
+  PIECE // шт
+  TEASPOON // ч.л.
+  TABLESPOON // ст.л.
+  CLOVES // зубчик
+}
