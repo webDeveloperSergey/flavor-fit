@@ -27,7 +27,8 @@ export default tseslint.config(
 	{
 		rules: {
 			'no-console': 0,
-			'prettier/prettier': 0
+			'prettier/prettier': 0,
+			'@typescript-eslint/no-unsafe-assignment': 0
 		}
 	}
 )

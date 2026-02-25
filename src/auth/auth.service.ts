@@ -10,7 +10,7 @@ import { AuthTokenData } from './auth.interface'
 @Injectable()
 export class AuthService {
   constructor(
-    private authRepository: AuthRepository,
+    private repository: AuthRepository,
     private jwt: JwtService,
     private configService: ConfigService,
   ) {}
@@ -22,7 +22,7 @@ export class AuthService {
   async register(input: RegisterInput) {
     const { email, password } = input
 
-    const findUser = await this.authRepository.findByEmail(email)
+    const findUser = await this.repository.findByEmail(email)
 
     if (findUser) {
       throw new BadRequestException(ALREADY_REGISTERED)
@@ -30,7 +30,7 @@ export class AuthService {
 
     const hashPwd = await hash(password)
 
-    const user = await this.authRepository.createUser(email, hashPwd)
+    const user = await this.repository.createUser(email, hashPwd)
 
     const tokens = this.generatesTokens({
       id: user.id,
