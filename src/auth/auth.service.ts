@@ -11,6 +11,8 @@ import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 import { AuthTokenData } from './auth.interface'
 import { UsersService } from '../users/users.service'
+import { CookieOptions, Response } from 'express'
+import { isDevMode } from '../utilities/isDevMode'
 
 @Injectable()
 export class AuthService {
@@ -24,6 +26,15 @@ export class AuthService {
   private EXPIRE_HOURS_TOKEN = 1
   private EXPIRE_DAYS_REFRESH_TOKEN = 3
   REFRESH_TOKEN_NAME = 'refresh_token'
+
+  private get cookieOptions(): CookieOptions {
+    return {
+      httpOnly: true,
+      domain: this.configService.get<string>('DOMAIN'),
+      sameSite: isDevMode(this.configService) ? 'none' : 'strict',
+      secure: true,
+    }
+  }
 
   async register(input: RegisterInput) {
     const { email, password } = input
@@ -52,6 +63,23 @@ export class AuthService {
     })
 
     return { user, ...tokens }
+  }
+
+  addRefreshTokenToResponse(res: Response, refreshToken: string) {
+    const expiresIn = new Date()
+    expiresIn.setDate(expiresIn.getDate() + this.EXPIRE_DAYS_REFRESH_TOKEN)
+
+    res.cookie(this.REFRESH_TOKEN_NAME, refreshToken, {
+      ...this.cookieOptions,
+      expires: expiresIn,
+    })
+  }
+
+  removeRefreshTokenFromResponse(res: Response) {
+    res.cookie(this.REFRESH_TOKEN_NAME, '', {
+      ...this.cookieOptions,
+      expires: new Date(0),
+    })
   }
 
   private async validateUser(input: RegisterInput) {
