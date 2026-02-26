@@ -27,6 +27,8 @@ export class AuthService {
   private EXPIRE_DAYS_REFRESH_TOKEN = 3
   REFRESH_TOKEN_NAME = 'refresh_token'
 
+  // Делаем getter, поскольку инициализации полей класса выполнится до того, как параметры конструктора будут присвоены
+  // Getter вычисляется при вызове, а не на старте (configService уже проинициализируется)
   private get cookieOptions(): CookieOptions {
     return {
       httpOnly: true,
