@@ -5,7 +5,11 @@ import { UsersRepository } from './users.repository'
 export class UsersService {
   constructor(private repository: UsersRepository) {}
 
-  async getUser(email: string) {
+  async getUserByEmail(email: string) {
     return await this.repository.findByEmail(email)
+  }
+
+  async getUserById(id: string) {
+    return await this.repository.findById(id)
   }
 }

@@ -3,16 +3,16 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { AuthRepository } from './auth.repository'
-import { ALREADY_REGISTERED, WRONG_PASSWORD_OR_EMAIL } from './auth.constants'
-import { hash, verify } from 'argon2'
-import { RegisterInput } from './auth.input'
-import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
-import { AuthTokenData } from './auth.interface'
-import { UsersService } from '../users/users.service'
+import { JwtService } from '@nestjs/jwt'
+import { hash, verify } from 'argon2'
 import { CookieOptions, Response } from 'express'
+import { UsersService } from '../users/users.service'
 import { isDevMode } from '../utilities/isDevMode'
+import { ALREADY_REGISTERED, WRONG_PASSWORD_OR_EMAIL } from './auth.constants'
+import { RegisterInput } from './auth.input'
+import { AuthTokenData } from './auth.interface'
+import { AuthRepository } from './auth.repository'
 
 @Injectable()
 export class AuthService {
@@ -87,7 +87,7 @@ export class AuthService {
   private async validateUser(input: RegisterInput) {
     const { email, password: inputPwd } = input
 
-    const user = await this.usersService.getUser(email)
+    const user = await this.usersService.getUserByEmail(email)
     if (!user) throw new NotFoundException(WRONG_PASSWORD_OR_EMAIL)
 
     const isPwdValid = await verify(user.password, inputPwd)
