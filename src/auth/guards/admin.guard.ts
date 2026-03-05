@@ -14,9 +14,7 @@ export class GqlAdminGuard implements CanActivate {
     const user = gqlCtx.getContext<{ req: RequestWithUser }>().req.user
 
     if (user?.role !== Role.ADMIN) {
-      throw new ForbiddenError(
-        FORBIDDEN,
-      )
+      throw new ForbiddenError(FORBIDDEN)
     }
 
     return true

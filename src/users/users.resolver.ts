@@ -1,10 +1,10 @@
 import { Query, Resolver } from '@nestjs/graphql'
 import { Role } from 'prisma/generated/prisma/enums'
-import { Profile } from 'prisma/generated/prisma/profile/profile.model'
-import { User } from 'prisma/generated/prisma/user/user.model'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator'
 import { UsersService } from './users.service'
+import { Profile } from 'prisma/generated/models/profile'
+import { User } from 'prisma/generated/models/user'
 
 @Resolver()
 export class UsersResolver {

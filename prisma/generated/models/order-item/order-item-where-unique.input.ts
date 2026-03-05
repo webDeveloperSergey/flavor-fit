@@ -1,0 +1,45 @@
+import { Field } from '@nestjs/graphql';
+import { InputType } from '@nestjs/graphql';
+import { OrderItemWhereInput } from './order-item-where.input';
+import { StringFilter } from '../prisma/string-filter.input';
+import { IntNullableFilter } from '../prisma/int-nullable-filter.input';
+import { DateTimeFilter } from '../prisma/date-time-filter.input';
+import { RecipeIngredientScalarRelationFilter } from '../recipe-ingredient/recipe-ingredient-scalar-relation-filter.input';
+import { OrderScalarRelationFilter } from '../order/order-scalar-relation-filter.input';
+
+@InputType()
+export class OrderItemWhereUniqueInput {
+
+    @Field(() => String, {nullable:true})
+    id?: string;
+
+    @Field(() => [OrderItemWhereInput], {nullable:true})
+    AND?: Array<OrderItemWhereInput>;
+
+    @Field(() => [OrderItemWhereInput], {nullable:true})
+    OR?: Array<OrderItemWhereInput>;
+
+    @Field(() => [OrderItemWhereInput], {nullable:true})
+    NOT?: Array<OrderItemWhereInput>;
+
+    @Field(() => StringFilter, {nullable:true})
+    recipeIngredientId?: StringFilter;
+
+    @Field(() => IntNullableFilter, {nullable:true})
+    quantity?: IntNullableFilter;
+
+    @Field(() => StringFilter, {nullable:true})
+    orderId?: StringFilter;
+
+    @Field(() => DateTimeFilter, {nullable:true})
+    createdAt?: DateTimeFilter;
+
+    @Field(() => DateTimeFilter, {nullable:true})
+    updatedAt?: DateTimeFilter;
+
+    @Field(() => RecipeIngredientScalarRelationFilter, {nullable:true})
+    recipeIngredient?: RecipeIngredientScalarRelationFilter;
+
+    @Field(() => OrderScalarRelationFilter, {nullable:true})
+    order?: OrderScalarRelationFilter;
+}

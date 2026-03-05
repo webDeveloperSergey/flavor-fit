@@ -5,9 +5,21 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider     = "node node_modules/prisma-nestjs-graphql"
+  provider     = "prisma-client"
   output       = "../generated/prisma"
   moduleFormat = "cjs"
+}
+
+generator nestgraphgql {
+  provider           = "node node_modules/prisma-nestjs-graphql"
+  moduleFormat       = "cjs"
+  output             = "../generated/models"
+  prismaClientImport = "prisma/generated/prisma/client"
+
+  reExport                              = Directories
+  omitModelsCount                       = true
+  noAtomicOperations                    = true
+  requireSingleFieldsInWhereUniqueInput = true
 }
 
 datasource db {
