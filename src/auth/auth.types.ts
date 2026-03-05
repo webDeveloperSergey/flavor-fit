@@ -1,6 +1,6 @@
 import { Role } from '../../prisma/generated/prisma/enums'
 
-export interface AuthTokenData {
+export type AuthTokenData = {
   id: string
   role: Role
 }

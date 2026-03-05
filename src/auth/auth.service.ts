@@ -11,7 +11,7 @@ import { UsersService } from '../users/users.service'
 import { isDevMode } from '../utilities/isDevMode'
 import { ALREADY_REGISTERED, WRONG_PASSWORD_OR_EMAIL } from './auth.constants'
 import { RegisterInput } from './auth.input'
-import { AuthTokenData } from './auth.interface'
+import { AuthTokenData } from './auth.types'
 import { AuthRepository } from './auth.repository'
 
 @Injectable()
