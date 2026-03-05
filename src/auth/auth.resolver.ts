@@ -2,7 +2,7 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { AuthService } from './auth.service'
 import { RegisterInput } from './auth.input'
 import { RegisterOutput } from './auth.output'
-import type { GqlContext } from '../app.interface'
+import type { GqlContext } from '../app.type'
 
 @Resolver()
 export class AuthResolver {
