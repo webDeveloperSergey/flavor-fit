@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
+import { UserIncludes } from './user.types'
 
 @Injectable()
 export class UsersRepository {
@@ -16,11 +17,12 @@ export class UsersRepository {
     })
   }
 
-  async findById(id: string) {
+  async findById(id: string, include?: UserIncludes) {
     return this.prisma.user.findUnique({
       where: {
         id,
       },
+      include,
     })
   }
 }

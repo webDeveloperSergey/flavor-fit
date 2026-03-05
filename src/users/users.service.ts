@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { UserIncludes } from './user.types'
 import { UsersRepository } from './users.repository'
 
 @Injectable()
@@ -9,7 +10,7 @@ export class UsersService {
     return await this.repository.findByEmail(email)
   }
 
-  async getUserById(id: string) {
-    return await this.repository.findById(id)
+  async getUserById(id: string, include?: UserIncludes) {
+    return await this.repository.findById(id, include)
   }
 }
