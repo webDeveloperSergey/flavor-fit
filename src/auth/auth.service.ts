@@ -37,11 +37,11 @@ export class AuthService {
   // Getter вычисляется при вызове, а не на старте (configService уже проинициализируется)
   private get cookieOptions(): CookieOptions {
     return {
-      httpOnly: true,
-      domain: this.configService.get<string>('DOMAIN'),
-      sameSite: isDevMode(this.configService) ? 'none' : 'strict',
-      secure: true,
-    }
+      httpOnly: true, // Только серерная кука (не доступно с клиенто (document.cookie) / защита от XSS-ата )
+      domain: this.configService.get<string>('DOMAIN'), //  На каком домене действует cookie
+      sameSite: isDevMode(this.configService) ? 'none' : 'strict', // защита от CSRF-атак (в дев режима отключаем, так как локально бэк и фронт поднимаются на разных портах)
+      secure: true, //  cookie отправляется только по HTTPS
+    } // Параметры для устнавки кук
   }
 
   async register(input: RegisterInput) {
@@ -73,6 +73,7 @@ export class AuthService {
     return { user, ...tokens }
   }
 
+  // На основе валидного refreshToken генерируем себе новые токены
   async getNewTokens(refreshToken: string) {
     const validToken: AuthTokenData = this.jwt.verify(refreshToken)
     if (!validToken) throw new BadGatewayException(INVALID_REFRESH_TOKEN)
@@ -91,6 +92,7 @@ export class AuthService {
     }
   }
 
+  // Добавляем в куки refreshToken и определяем день пртухания
   addRefreshTokenToResponse(res: Response, refreshToken: string) {
     const expiresIn = new Date()
     expiresIn.setDate(expiresIn.getDate() + this.EXPIRE_DAYS_REFRESH_TOKEN)
@@ -101,6 +103,7 @@ export class AuthService {
     })
   }
 
+  // Зачищаем с кук refreshToken
   removeRefreshTokenFromResponse(res: Response) {
     res.cookie(this.REFRESH_TOKEN_NAME, '', {
       ...this.cookieOptions,
@@ -108,6 +111,7 @@ export class AuthService {
     })
   }
 
+  // Метод, который позволяет провалидировать пользователя по паролю и почте
   private async validateUser(input: RegisterInput) {
     const { email, password: inputPwd } = input
 
@@ -120,6 +124,7 @@ export class AuthService {
     return user
   }
 
+  // Метод, который создает JWT токены (основной и рефреш)
   private generatesTokens(data: AuthTokenData) {
     const accessToken = this.jwt.sign(data, {
       expiresIn: `${this.EXPIRE_HOURS_TOKEN}h`,
