@@ -7,18 +7,20 @@ import {
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { hash, verify } from 'argon2'
-import { CookieOptions, Response } from 'express'
+import { CookieOptions, Response, Request } from 'express'
 import { UsersService } from '../users/users.service'
 import { isDevMode } from '../utilities/isDevMode'
 import {
   ALREADY_REGISTERED,
   INVALID_REFRESH_TOKEN,
+  REFRESH_MISSING,
   USER_NOT_FOUNT,
   WRONG_PASSWORD_OR_EMAIL,
 } from './auth.constants'
 import { RegisterInput } from './auth.input'
 import { AuthTokenData } from './auth.types'
 import { AuthRepository } from './auth.repository'
+import { Cookies } from 'src/app.type'
 
 @Injectable()
 export class AuthService {
@@ -109,6 +111,18 @@ export class AuthService {
       ...this.cookieOptions,
       expires: new Date(0),
     })
+  }
+
+  getCurrentRefreshToken(res: Response, req: Request) {
+    const cookies = req.cookies as Cookies
+
+    const currentRefreshToken = cookies?.[this.REFRESH_TOKEN_NAME]
+    if (!currentRefreshToken) {
+      this.removeRefreshTokenFromResponse(res)
+      throw new BadRequestException(REFRESH_MISSING)
+    }
+
+    return currentRefreshToken
   }
 
   // Метод, который позволяет провалидировать пользователя по паролю и почте

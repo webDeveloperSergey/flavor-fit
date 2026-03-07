@@ -28,6 +28,14 @@ export class AuthResolver {
     return response
   }
 
+  @Mutation(() => Boolean)
+  logout(@Context() { res, req }: GqlContext) {
+    this.authService.getCurrentRefreshToken(res, req)
+    this.authService.removeRefreshTokenFromResponse(res)
+
+    return true
+  }
+
   // TODO: add captcha
   @Mutation(() => RegisterOutput)
   async register(
