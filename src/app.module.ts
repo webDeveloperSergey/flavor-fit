@@ -16,7 +16,6 @@ import { UsersResolver } from './users/users.resolver'
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [ConfigModule],
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       useFactory: getGraphQLConfig,
       inject: [ConfigService],
     }),
