@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   BadRequestException,
   Injectable,
   NotFoundException,
@@ -9,7 +10,12 @@ import { hash, verify } from 'argon2'
 import { CookieOptions, Response } from 'express'
 import { UsersService } from '../users/users.service'
 import { isDevMode } from '../utilities/isDevMode'
-import { ALREADY_REGISTERED, WRONG_PASSWORD_OR_EMAIL } from './auth.constants'
+import {
+  ALREADY_REGISTERED,
+  INVALID_REFRESH_TOKEN,
+  USER_NOT_FOUNT,
+  WRONG_PASSWORD_OR_EMAIL,
+} from './auth.constants'
 import { RegisterInput } from './auth.input'
 import { AuthTokenData } from './auth.types'
 import { AuthRepository } from './auth.repository'
@@ -65,6 +71,24 @@ export class AuthService {
     })
 
     return { user, ...tokens }
+  }
+
+  async getNewTokens(refreshToken: string) {
+    const validToken: AuthTokenData = this.jwt.verify(refreshToken)
+    if (!validToken) throw new BadGatewayException(INVALID_REFRESH_TOKEN)
+
+    const user = await this.usersService.getUserById(validToken.id)
+    if (!user) throw new NotFoundException(USER_NOT_FOUNT)
+
+    const tokens = this.generatesTokens({
+      id: user.id,
+      role: user.role,
+    })
+
+    return {
+      user,
+      ...tokens,
+    }
   }
 
   addRefreshTokenToResponse(res: Response, refreshToken: string) {
